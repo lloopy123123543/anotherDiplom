@@ -40,7 +40,7 @@ export const statisticsCardsData = [
     },
   },
   {
-    color: "green",
+    color: "light-green",
     icon: ChartBarIcon,
     title: "Доход",
     value: "20 000 руб",

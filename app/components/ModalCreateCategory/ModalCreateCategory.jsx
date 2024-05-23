@@ -1,0 +1,45 @@
+import {Modal} from "@/app/components/Modal/Modal";
+import {Button, Input, Typography} from "@material-tailwind/react";
+import React, {useState} from "react";
+import {ID} from "appwrite";
+import {databases} from "@/app/appwrite";
+
+export const ModalCreateCategory = ({user,isOpen,setIsOpen}) => {
+  const [categoryName, setCategoryName] = useState("")
+
+
+
+  const createCategory = () => {databases.createDocument(
+    '664dccf6002506fb7cb7',
+    '664dcd4e002e1707355a',
+    ID.unique(),
+    {
+      "users": user.$id,
+      "spending_title": `${categoryName}`
+    }
+  );}
+
+  return(
+        <Modal>
+          <div className="flex flex-col gap-5">
+           <div className="flex flex-col gap-2">
+             <Typography onClick={()=> setIsOpen((!isOpen))} className="font-normal text-blue-gray-600">
+               Название категории
+             </Typography>
+             <Input
+               value={categoryName}
+               onChange={(e) => setCategoryName(e.target.value)}
+               type="text"
+               className="w-full"
+               variant="outlined"
+               color="blue-gray"
+               size="sm"
+             />
+           </div>
+
+            <Button onClick={() => createCategory()}>Создать</Button>
+          </div>
+        </Modal>
+
+  )
+}

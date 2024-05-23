@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   Typography,
   Card,
@@ -8,35 +8,195 @@ import {
   Menu,
   MenuHandler,
   MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
+  MenuItem, Spinner,
 } from "@material-tailwind/react";
-import {
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
 
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+
+import {
+  BanknotesIcon,
+  ChartBarIcon,
+  ClockIcon,
+  UserPlusIcon,
+  UsersIcon
+} from "@heroicons/react/24/solid";
 import StatisticsCard from "@/app/widgets/cards/statistics-card";
 import StatisticsChart from "@/app/widgets/charts/statistics-chart";
-import statisticsCardsData from "@/app/data/statistics-cards-data";
 import statisticsChartsData from "@/app/data/statistics-charts-data";
 import projectsTableData from "@/app/data/projects-table-data";
-import ordersOverviewData from "@/app/data/orders-overview-data";
+import {databases} from "@/app/appwrite";
+import {Query} from "appwrite";
+import {convertDateFormat} from "@/app/configs/formatData";
+import {ModalCreateCategory} from "@/app/components/ModalCreateCategory/ModalCreateCategory";
+import {ModalCreateTask} from "@/app/components/ModalCreateTask/ModalCreateTask";
+import {PlusIcon} from "@heroicons/react/16/solid";
 
-export function Home() {
+export function Home({user}) {
+  const [spendings, setSpendings] = useState(null)
+  const [spending, setSpending] = useState(null)
+  const [allSpendings, setAllSpendings] = useState([])
+
+  const [modalCreateCategory, setModalCreateCategory] = useState(false)
+  const [modalCreateTaskS, setModalCreateTaskS] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(true)
+
+
+
+
+  useEffect(() => {
+    async function getDatabase() {
+      if (user) {
+        try {
+          const res = await databases.listDocuments(
+            '664dccf6002506fb7cb7',
+            '664dcd4e002e1707355a',
+            [
+              Query.equal('users', user["$id"])
+            ]
+          );
+          await setSpendings(res.documents);
+        } catch (error) {
+          console.error('Error fetching database:', error);
+        }
+      }
+    }
+    getDatabase();
+  }, [user]);
+
+  useEffect(() => {
+    async function fetchDataForAllSpendings() {
+      if (spendings && spendings.length > 0) {
+        const allSpendingsData = [];
+
+        for (let i = 0; i < spendings.length; i++) {
+          const spendOne = spendings[i];
+          const spendingsRes = await databases.listDocuments(
+            '664dccf6002506fb7cb7',
+            '664dce0100154939f73c',
+            [
+              Query.equal('spendings', spendOne["$id"])
+            ]
+          );
+
+          allSpendingsData.push(...spendingsRes.documents);
+        }
+        setAllSpendings(allSpendingsData);
+        setIsLoading(false)
+      }
+    }
+
+    fetchDataForAllSpendings();
+  }, [spendings]);
+
+  const getStatisticsCardsData = () => {
+    const budget = () => {
+      let sum = 0;
+      if (allSpendings && allSpendings.length > 0) {
+        allSpendings.forEach((spend) => {
+          if (spend.spend && spend.cost) {
+            sum -= spend.cost;
+          } else {
+            sum += spend.cost;
+          }
+        });
+      }
+      return sum;
+    };
+
+    const spends = () => {
+      let sum = 0;
+      if (allSpendings && allSpendings.length > 0) {
+        allSpendings.forEach((spend) => {
+          if (spend.spend && spend.cost) {
+            sum += spend.cost;
+          }
+        });
+      }
+      return sum;
+    };
+
+    const improve = () => {
+      let sum = 0;
+      if (allSpendings && allSpendings.length > 0) {
+        allSpendings.forEach((spend) => {
+          if (!spend.spend && spend.cost) {
+            sum += spend.cost;
+          }
+        });
+      }
+      return sum;
+    };
+
+    console.log(allSpendings)
+    return [
+      {
+        color: "gray",
+        icon: BanknotesIcon,
+        title: "Бюджет",
+        value: `${budget()} руб`,
+        footer: {
+          color: "text-green-500",
+          value: "",
+          label: "Кол-во денег в настоящее время",
+        },
+      },
+      {
+        color: "red",
+        icon: UsersIcon,
+        title: "Расходы",
+        value: `${spends()} руб`,
+        footer: {
+          color: "text-green-500",
+          value: "",
+          label: "Общее кол-во расходов",
+        },
+      },
+      {
+        color: "blue",
+        icon: UserPlusIcon,
+        title: "Виды доходов",
+        value: "3",
+        footer: {
+          color: "text-red-500",
+          value: "",
+          label: "Все виды доходов",
+        },
+      },
+      {
+        color: "light-green",
+        icon: ChartBarIcon,
+        title: "Доход",
+        value: `${improve()} руб`,
+        footer: {
+          color: "text-green-500",
+          value: "",
+          label: "Средняя сумма дохода",
+        },
+      },
+    ];
+  }
+
+
+
   return (
     <div className="mt-12">
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
+      {modalCreateCategory && (
+        <ModalCreateCategory isOpen={modalCreateCategory} setIsOpen={setModalCreateCategory} user={user}/>
+      )}
+
+      {modalCreateTaskS && (
+        <ModalCreateTask setIsOpen={setModalCreateTaskS} categories={spendings} user={user}/>
+      )}
+
+      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4 ">
+        {getStatisticsCardsData().map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
             key={title}
             {...rest}
             title={title}
+            isLoading={isLoading}
             icon={React.createElement(icon, {
-              className: "w-6 h-6 text-white",
+              className: "w-6 h-6 text-white ",
             })}
             footer={
               <Typography className="font-normal text-blue-gray-600">
@@ -65,47 +225,43 @@ export function Home() {
         ))}
       </div>
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 flex items-center justify-between p-6"
-          >
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-1">
-                Projects
-              </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
-                <strong>30 done</strong> this month
-              </Typography>
-            </div>
-            <Menu placement="left-start">
-              <MenuHandler>
-                <IconButton size="sm" variant="text" color="blue-gray">
-                  <EllipsisVerticalIcon
-                    strokeWidth={3}
-                    fill="currenColor"
-                    className="h-6 w-6"
-                  />
-                </IconButton>
-              </MenuHandler>
-              <MenuList>
-                <MenuItem>Action</MenuItem>
-                <MenuItem>Another Action</MenuItem>
-                <MenuItem>Something else here</MenuItem>
-              </MenuList>
-            </Menu>
-          </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
+        {isLoading ? (
+          <Spinner/>
+        ) : (
+          <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm ">
+            <CardHeader
+              floated={false}
+              shadow={false}
+              color="transparent"
+              className="m-0 flex items-center justify-between p-6"
+            >
+              <div>
+                <Typography variant="h6" color="blue-gray" className="mb-1">
+                  Статистика
+                </Typography>
+              </div>
+              <Menu placement="left-start">
+                <MenuHandler>
+                  <IconButton size="sm" variant="text" color="blue-gray">
+                    <PlusIcon
+                      strokeWidth={3}
+                      fill="blue-gray"
+                      className="h-6 w-6"
+                    />
+                  </IconButton>
+                </MenuHandler>
+                <MenuList>
+                  <MenuItem> <div onClick={() => setModalCreateCategory(true)}>Создать категорию</div> </MenuItem>
+                  <MenuItem><div onClick={() => setModalCreateTaskS(true)}>Создать задачу</div></MenuItem>
+                  {/*<MenuItem>Something else here</MenuItem>*/}
+                </MenuList>
+              </Menu>
+            </CardHeader>
+            <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+              <table className="w-full min-w-[640px] table-auto">
+                <thead>
                 <tr>
-                  {["companies", "members", "budget", "completion"].map(
+                  {["Категория", "Подробнее", "Сумма", "Дата"].map(
                     (el) => (
                       <th
                         key={el}
@@ -121,10 +277,10 @@ export function Home() {
                     )
                   )}
                 </tr>
-              </thead>
-              <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, spend, completion }, key) => {
+                </thead>
+                <tbody>
+                {allSpendings.map(
+                  ({ spendTitle, cost, spendings, spend, datetime }, key) => {
                     const className = `py-3 px-5 ${
                       key === projectsTableData.length - 1
                         ? ""
@@ -135,30 +291,17 @@ export function Home() {
                       <tr key={name}>
                         <td className={className}>
                           <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={name} size="sm" />
                             <Typography
                               variant="small"
                               color="blue-gray"
                               className="font-bold"
                             >
-                              {name}
+                              {spendings.spending_title}
                             </Typography>
                           </div>
                         </td>
                         <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))}
+                          {spendTitle}
                         </td>
                         <td className={className}>
                           <Typography
@@ -166,7 +309,7 @@ export function Home() {
                             className="text-xs font-medium text-blue-gray-600"
                             style={{color: spend ? "red" : "green"}}
                           >
-                            {budget}
+                            {cost}
                           </Typography>
                         </td>
                         <td className={className}>
@@ -175,24 +318,19 @@ export function Home() {
                               variant="small"
                               className="mb-1 block text-xs font-medium text-blue-gray-600"
                             >
-                              {completion}%
+                              {convertDateFormat(datetime)}
                             </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
                           </div>
                         </td>
                       </tr>
                     );
                   }
                 )}
-              </tbody>
-            </table>
-          </CardBody>
-        </Card>
+                </tbody>
+              </table>
+            </CardBody>
+          </Card>
+        )}
 
       </div>
     </div>

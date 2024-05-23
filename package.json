@@ -14,10 +14,13 @@
     "@material-tailwind/react": "^2.1.9",
     "apexcharts": "^3.49.1",
     "appwrite": "^14.0.1",
+    "date-fns": "^3.6.0",
     "next": "14.2.3",
     "react": "^18",
     "react-apexcharts": "^1.4.1",
-    "react-dom": "^18"
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18",
+    "sass": "^1.77.2"
   },
   "devDependencies": {
     "@types/node": "^20",
