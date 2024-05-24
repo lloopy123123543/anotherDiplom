@@ -40,9 +40,6 @@ export function Home({user}) {
 
   const [isLoading, setIsLoading] = useState(true)
 
-
-
-
   useEffect(() => {
     async function getDatabase() {
       if (user) {
@@ -84,7 +81,6 @@ export function Home({user}) {
         setIsLoading(false)
       }
     }
-
     fetchDataForAllSpendings();
   }, [spendings]);
 
@@ -127,7 +123,6 @@ export function Home({user}) {
       return sum;
     };
 
-    console.log(allSpendings)
     return [
       {
         color: "gray",
@@ -181,15 +176,28 @@ export function Home({user}) {
   return (
     <div className="mt-12">
       {modalCreateCategory && (
-        <ModalCreateCategory isOpen={modalCreateCategory} setIsOpen={setModalCreateCategory} user={user}/>
+        <ModalCreateCategory
+          isOpen={modalCreateCategory}
+          setIsOpen={setModalCreateCategory}
+          user={user}/>
       )}
 
       {modalCreateTaskS && (
-        <ModalCreateTask setIsOpen={setModalCreateTaskS} categories={spendings} user={user}/>
+        <ModalCreateTask
+          allSpendings={allSpendings}
+          setAllSpendings={setAllSpendings}
+          isOpen={modalCreateTaskS}
+          setIsOpen={setModalCreateTaskS}
+          categories={spendings}
+          user={user}/>
       )}
 
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4 ">
-        {getStatisticsCardsData().map(({ icon, title, footer, ...rest }) => (
+        {getStatisticsCardsData().map(({ icon,
+                                         title,
+                                         footer,
+                                         ...rest
+        }) => (
           <StatisticsCard
             key={title}
             {...rest}
@@ -224,39 +232,42 @@ export function Home({user}) {
           />
         ))}
       </div>
+
+
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm ">
+          <CardHeader
+            floated={false}
+            shadow={false}
+            color="transparent"
+            className="m-0 flex items-center justify-between p-6"
+          >
+            <div>
+              <Typography variant="h6" color="blue-gray" className="mb-1">
+                Статистика
+              </Typography>
+            </div>
+            <Menu placement="left-start">
+              <MenuHandler>
+                <IconButton size="sm" variant="text" color="blue-gray">
+                  <PlusIcon
+                    strokeWidth={3}
+                    fill="blue-gray"
+                    className="h-6 w-6"
+                  />
+                </IconButton>
+              </MenuHandler>
+              <MenuList>
+                <MenuItem> <div onClick={() => setModalCreateCategory(true)}>Создать категорию</div> </MenuItem>
+                <MenuItem><div onClick={() => setModalCreateTaskS(true)}>Создать задачу</div></MenuItem>
+                {/*<MenuItem>Something else here</MenuItem>*/}
+              </MenuList>
+            </Menu>
+          </CardHeader>
         {isLoading ? (
           <Spinner/>
         ) : (
-          <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm ">
-            <CardHeader
-              floated={false}
-              shadow={false}
-              color="transparent"
-              className="m-0 flex items-center justify-between p-6"
-            >
-              <div>
-                <Typography variant="h6" color="blue-gray" className="mb-1">
-                  Статистика
-                </Typography>
-              </div>
-              <Menu placement="left-start">
-                <MenuHandler>
-                  <IconButton size="sm" variant="text" color="blue-gray">
-                    <PlusIcon
-                      strokeWidth={3}
-                      fill="blue-gray"
-                      className="h-6 w-6"
-                    />
-                  </IconButton>
-                </MenuHandler>
-                <MenuList>
-                  <MenuItem> <div onClick={() => setModalCreateCategory(true)}>Создать категорию</div> </MenuItem>
-                  <MenuItem><div onClick={() => setModalCreateTaskS(true)}>Создать задачу</div></MenuItem>
-                  {/*<MenuItem>Something else here</MenuItem>*/}
-                </MenuList>
-              </Menu>
-            </CardHeader>
+
             <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
               <table className="w-full min-w-[640px] table-auto">
                 <thead>
@@ -296,7 +307,7 @@ export function Home({user}) {
                               color="blue-gray"
                               className="font-bold"
                             >
-                              {spendings.spending_title}
+                              {spendings.spending_title || spendings}
                             </Typography>
                           </div>
                         </td>
@@ -329,9 +340,9 @@ export function Home({user}) {
                 </tbody>
               </table>
             </CardBody>
-          </Card>
-        )}
 
+        )}
+        </Card>
       </div>
     </div>
   );

@@ -14,40 +14,61 @@ import {ID} from "appwrite";
 import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/16/solid";
 import {DayPicker} from "react-day-picker";
 import {format} from "date-fns";
+import {CloseIcon} from "next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon";
+import {toast} from "react-toastify";
 
-export const ModalCreateTask = ({categories, user, setIsOpen}) => {
+export const ModalCreateTask = ({categories, user, setIsOpen, isOpen, allSpendings, setAllSpendings}) => {
   const [taskName, setTaskName] = useState()
   const [currentOption, setCurrentOption] = useState()
   const [cost, setCost] = useState(0)
   const [date, setDate] = useState()
   const [spend, setSpend] = useState(false)
+  console.log(allSpendings)
 
-  const createTask = () => {
-    console.log(currentOption)
-    databases.createDocument(
+  const createTask = async () => {
+
+    await databases.createDocument(
     '664dccf6002506fb7cb7',
     '664dce0100154939f73c',
     ID.unique(),
     {
-      "spendings": `${currentOption}`,
+      "spendings": `${currentOption.id}`,
       "spendTitle": `${taskName}`,
       "cost": Number(cost),
       "datetime": date.toISOString(),
       "spend": spend
-
     }
-  );}
+    );
+    toast.success("Создано")
+    setAllSpendings([
+      {
+        spendings: `${currentOption.title}`,
+        cost: Number(cost),
+        spendTitle: `${taskName}`,
+        datetime: date.toISOString(),
+        spend: spend
+      },
+      ...allSpendings
+
+    ]);
+  }
 
   return(
     <Modal>
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <Typography onClick={()=> setIsOpen((!isOpen))} className="font-normal text-blue-gray-600">
-            Название задачи
+          <div onClick={()=> setIsOpen((!isOpen))} className="flex justify-end cursor-pointer">
+            <CloseIcon/>
+          </div>
+          <Typography  className="font-normal text-blue-gray-600">
+            Создание расхода/дохода
           </Typography>
           <Select onChange={(val) => setCurrentOption(val)} >
             {categories.map((cat) => (
-              <Option key={cat.$id} onChange={() => setCurrentOption(cat.$id)} value={cat.$id}>
+              <Option key={cat.$id} value={{
+                id: cat.$id,
+                title: cat.spending_title
+              }}>
                 {cat.spending_title}
               </Option>
             ))}
@@ -69,6 +90,7 @@ export const ModalCreateTask = ({categories, user, setIsOpen}) => {
             className="w-full"
             variant="outlined"
             color="blue-gray"
+            placeholder={"Пояснение"}
             size="sm"
           />
           <Input

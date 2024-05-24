@@ -115,7 +115,7 @@ export function Dashboard() {
           )}
 
           {dashPage === "profile" && (
-            <Profile user={profileInfo}/>
+            <Profile profileInfo = {profileInfo} setProfileInfo={setProfileInfo} user={user} setUser={setUser}/>
           )}
 
 

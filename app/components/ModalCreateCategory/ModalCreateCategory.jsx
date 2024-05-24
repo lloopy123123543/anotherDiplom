@@ -3,6 +3,8 @@ import {Button, Input, Typography} from "@material-tailwind/react";
 import React, {useState} from "react";
 import {ID} from "appwrite";
 import {databases} from "@/app/appwrite";
+import {CloseIcon} from "next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon";
+import {toast} from "react-toastify";
 
 export const ModalCreateCategory = ({user,isOpen,setIsOpen}) => {
   const [categoryName, setCategoryName] = useState("")
@@ -17,25 +19,30 @@ export const ModalCreateCategory = ({user,isOpen,setIsOpen}) => {
       "users": user.$id,
       "spending_title": `${categoryName}`
     }
-  );}
+  );
+    toast.success("Создано")
+  }
 
   return(
         <Modal>
           <div className="flex flex-col gap-5">
-           <div className="flex flex-col gap-2">
-             <Typography onClick={()=> setIsOpen((!isOpen))} className="font-normal text-blue-gray-600">
-               Название категории
-             </Typography>
-             <Input
-               value={categoryName}
-               onChange={(e) => setCategoryName(e.target.value)}
-               type="text"
-               className="w-full"
-               variant="outlined"
-               color="blue-gray"
-               size="sm"
-             />
-           </div>
+            <div className="flex flex-col gap-2">
+              <div onClick={() => setIsOpen((!isOpen))} className="flex justify-end cursor-pointer">
+                <CloseIcon/>
+              </div>
+              <Typography className="font-normal text-blue-gray-600">
+                Название категории
+              </Typography>
+              <Input
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                type="text"
+                className="w-full"
+                variant="outlined"
+                color="blue-gray"
+                size="sm"
+              />
+            </div>
 
             <Button onClick={() => createCategory()}>Создать</Button>
           </div>

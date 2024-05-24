@@ -9,6 +9,7 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import {account, ID} from "@/app/appwrite";
 import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
 
 
 export function SignUp() {
@@ -18,30 +19,44 @@ export function SignUp() {
 
   const router = useRouter()
 
-  useEffect(() => {
-    async function getUser() {
-      try {
-        setUser(await account.get());
-        if(user){
-          router.push("/dashboard");
-        }
-      } catch (error) {
-        console.error("Error getting user:", error);
-      }
-    }
-    getUser();
-  }, [user]);
-
-
+  // async function getUser() {
+  //   try {
+  //     const userData = await account.get();
+  //     setUser(userData);
+  //     if (userData) {
+  //       toast.success("sus")
+  //       router.push("/dashboard");
+  //     }
+  //   } catch (error) {
+  //     toast.error(error)
+  //     console.error("Error getting user:", error);
+  //   }
+  // }
 
   async function handleRegister() {
     try {
-      await account.create(ID.unique(), email, password)
+      const userId = ID.unique();
+      await toast.promise(
+        account.create(userId, email, password), {
+          pending: "Регистрация",
+          success: "Вы успешно зарегистрировались",
+          error: "Ошибка регистрации",
+        }
+      )
 
-    } catch (e){
-      console.error(e)
+      clearAll();
+    } catch (error) {
+      toast.error("Ошибка, повторите позже")
+      console.error(error);
     }
   }
+
+  const clearAll = () => {
+    setEmail("");
+    setPassword("");
+  }
+
+
 
   return (
     <section className="m-8 flex">
