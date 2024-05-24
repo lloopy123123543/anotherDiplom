@@ -6,13 +6,42 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import Link from "next/link";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {account, ID} from "@/app/appwrite";
+import {useRouter} from "next/navigation";
 
 
 export function SignUp() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
+
+  const router = useRouter()
+
+  useEffect(() => {
+    async function getUser() {
+      try {
+        setUser(await account.get());
+        if(user){
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.error("Error getting user:", error);
+      }
+    }
+    getUser();
+  }, [user]);
+
+
+
+  async function handleRegister() {
+    try {
+      await account.create(ID.unique(), email, password)
+
+    } catch (e){
+      console.error(e)
+    }
+  }
 
   return (
     <section className="m-8 flex">
@@ -75,7 +104,7 @@ export function SignUp() {
             }
             containerProps={{className: "-ml-2.5"}}
           />
-          <Button className="mt-6" fullWidth>
+          <Button onClick={() => handleRegister()} className="mt-6" fullWidth>
             Зарегестрироваться
           </Button>
 

@@ -15,7 +15,7 @@ import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/16/solid";
 import {DayPicker} from "react-day-picker";
 import {format} from "date-fns";
 
-export const ModalCreateTask = ({categories, user}) => {
+export const ModalCreateTask = ({categories, user, setIsOpen}) => {
   const [taskName, setTaskName] = useState()
   const [currentOption, setCurrentOption] = useState()
   const [cost, setCost] = useState(0)
