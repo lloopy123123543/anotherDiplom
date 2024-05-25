@@ -29,6 +29,7 @@ import {convertDateFormat} from "@/app/configs/formatData";
 import {ModalCreateCategory} from "@/app/components/ModalCreateCategory/ModalCreateCategory";
 import {ModalCreateTask} from "@/app/components/ModalCreateTask/ModalCreateTask";
 import {PlusIcon} from "@heroicons/react/16/solid";
+import {GetStatisticCharts} from "@/app/components/GetStatisticCharts/GetStatisticCharts";
 
 export function Home({user}) {
   const [spendings, setSpendings] = useState(null)
@@ -39,6 +40,8 @@ export function Home({user}) {
   const [modalCreateTaskS, setModalCreateTaskS] = useState(false)
 
   const [isLoading, setIsLoading] = useState(true)
+
+  const [spendObj, setSpendObj] = useState([])
 
   useEffect(() => {
     async function getDatabase() {
@@ -64,6 +67,7 @@ export function Home({user}) {
     async function fetchDataForAllSpendings() {
       if (spendings && spendings.length > 0) {
         const allSpendingsData = [];
+        const updatedSpendObj = [];
 
         for (let i = 0; i < spendings.length; i++) {
           const spendOne = spendings[i];
@@ -76,11 +80,19 @@ export function Home({user}) {
           );
 
           allSpendingsData.push(...spendingsRes.documents);
+
+          updatedSpendObj.push({
+            category: spendOne,
+            spendings: spendingsRes.documents
+          });
         }
+
+        setSpendObj(updatedSpendObj);
         setAllSpendings(allSpendingsData);
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
+
     fetchDataForAllSpendings();
   }, [spendings]);
 
@@ -216,7 +228,7 @@ export function Home({user}) {
         ))}
       </div>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsChartsData.map((props) => (
+        {GetStatisticCharts(spendObj).statisticsChartsData.map((props) => (
           <StatisticsChart
             key={props.title}
             {...props}
