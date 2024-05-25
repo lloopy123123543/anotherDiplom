@@ -141,7 +141,7 @@ export function GetStatisticCharts (allSpendings){
       },
       xaxis: {
         ...chartsConfig.xaxis,
-        categories: [],
+        categories: data.spends,
       },
     },
   };
