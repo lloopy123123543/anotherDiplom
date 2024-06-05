@@ -3,11 +3,11 @@ import {Avatar, Card, CardBody, Spinner, Tab, Tabs, TabsHeader, Typography} from
 import {ChatBubbleLeftEllipsisIcon, Cog6ToothIcon, HomeIcon} from "@heroicons/react/24/solid";
 import {Profile} from "@/app/dashboard/profile";
 import {useEffect, useState} from "react";
-import {account, databases, ID} from "@/app/appwrite";
+import {account, databases} from "@/app/appwrite";
 import {useRouter} from "next/navigation";
 import {Query} from "appwrite";
-import Tables from "@/app/dashboard/tables";
 import Home from "@/app/dashboard/home";
+import {GigaChat} from "@/app/components/GigaChat/GigaChat";
 
 export function Dashboard() {
   const [dashPage, setDashPage] = useState("home");
@@ -52,8 +52,6 @@ export function Dashboard() {
         }
       }
     }
-
-
       getDatabase();
 
   }, [ user]);
@@ -117,17 +115,9 @@ export function Dashboard() {
           {dashPage === "profile" && (
             <Profile profileInfo = {profileInfo} setProfileInfo={setProfileInfo} user={user} setUser={setUser}/>
           )}
-
-
-
-
-
+          <GigaChat/>
         </CardBody>
       </Card>
     </div>
   );
 }
-
-Dashboard.displayName = "/src/layout/dashboard.jsx";
-
-export default Dashboard;

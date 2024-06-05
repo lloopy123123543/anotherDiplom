@@ -26,7 +26,6 @@ export const ModalCreateTask = ({categories, user, setIsOpen, isOpen, allSpendin
   console.log(allSpendings)
 
   const createTask = async () => {
-
     await databases.createDocument(
     '664dccf6002506fb7cb7',
     '664dce0100154939f73c',

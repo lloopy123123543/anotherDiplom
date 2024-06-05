@@ -29,9 +29,7 @@ export function SignIn() {
 
   async function handleLogin() {
     try {
-
       await account.createEmailPasswordSession(email, password);
-
       const acc = async ()  => { await account.get()}
       await toast.promise(
         acc, {
@@ -42,11 +40,11 @@ export function SignIn() {
       })
       await setUser(acc)
     } catch (error) {
-
       toast.error("Ошибка авторизации")
       console.error("Error logging in:", error);
     }
   }
+
   return (
     <section className="m-8 flex gap-4">
       <div className="w-full lg:w-3/5 ">

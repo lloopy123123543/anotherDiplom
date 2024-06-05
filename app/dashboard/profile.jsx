@@ -80,11 +80,6 @@ export function Profile({user, setUser, profileInfo, setProfileInfo}) {
         toast.success("Добавлено")
       }
 
-
-
-
-
-
     setProfileInfo({
       Name: name,
       fullName: fullName,
@@ -118,8 +113,8 @@ export function Profile({user, setUser, profileInfo, setProfileInfo}) {
           />
         </div>
 
-        <Card>
-          <form>
+        <Card className="p-10 ">
+          <form className="flex flex-col gap-4">
             <div>
               <Typography>
                 Сокращенное имя

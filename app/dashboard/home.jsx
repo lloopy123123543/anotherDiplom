@@ -10,8 +10,6 @@ import {
   MenuList,
   MenuItem, Spinner,
 } from "@material-tailwind/react";
-
-
 import {
   BanknotesIcon,
   ChartBarIcon,
@@ -161,12 +159,12 @@ export function Home({user}) {
       {
         color: "blue",
         icon: UserPlusIcon,
-        title: "Виды доходов",
-        value: "3",
+        title: "Позиции",
+        value: `${allSpendings.length}`,
         footer: {
           color: "text-red-500",
           value: "",
-          label: "Все виды доходов",
+          label: "Все позиции",
         },
       },
       {
