@@ -26,7 +26,7 @@ import {Query} from "appwrite";
 import {convertDateFormat} from "@/app/configs/formatData";
 import {ModalCreateCategory} from "@/app/components/ModalCreateCategory/ModalCreateCategory";
 import {ModalCreateTask} from "@/app/components/ModalCreateTask/ModalCreateTask";
-import {PlusIcon} from "@heroicons/react/16/solid";
+import {PlusIcon, TrashIcon} from "@heroicons/react/16/solid";
 import {GetStatisticCharts} from "@/app/components/GetStatisticCharts/GetStatisticCharts";
 
 export function Home({user}) {
@@ -59,7 +59,7 @@ export function Home({user}) {
       }
     }
     getDatabase();
-  }, [user]);
+  }, [user, modalCreateCategory, setModalCreateCategory, setModalCreateTaskS, modalCreateTaskS]);
 
   useEffect(() => {
     async function fetchDataForAllSpendings() {
@@ -92,7 +92,7 @@ export function Home({user}) {
     }
 
     fetchDataForAllSpendings();
-  }, [spendings]);
+  }, [spendings, modalCreateCategory, setModalCreateCategory, setModalCreateTaskS, modalCreateTaskS]);
 
   const getStatisticsCardsData = () => {
     const budget = () => {
@@ -189,7 +189,8 @@ export function Home({user}) {
         <ModalCreateCategory
           isOpen={modalCreateCategory}
           setIsOpen={setModalCreateCategory}
-          user={user}/>
+          user={user}
+        />
       )}
 
       {modalCreateTaskS && (
@@ -243,7 +244,6 @@ export function Home({user}) {
         ))}
       </div>
 
-
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm ">
           <CardHeader
@@ -282,7 +282,7 @@ export function Home({user}) {
               <table className="w-full min-w-[640px] table-auto">
                 <thead>
                 <tr>
-                  {["Категория", "Подробнее", "Сумма", "Дата"].map(
+                  {["Категория", "Подробнее", "Сумма", "Дата", ""].map(
                     (el) => (
                       <th
                         key={el}
@@ -343,6 +343,9 @@ export function Home({user}) {
                             </Typography>
                           </div>
                         </td>
+                        <td className={className}>
+                            <TrashIcon className="w-4 cursor-pointer"/>
+                        </td>
                       </tr>
                     );
                   }
@@ -353,7 +356,14 @@ export function Home({user}) {
 
         )}
         </Card>
+
+        <Card className="relative bg-clip-border rounded-xl overflow-hidden text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
+          <Typography variant="h6" color="blue-gray" className="mb-1">
+            Рекомендации от ИИ
+          </Typography>
+        </Card>
       </div>
+
     </div>
   );
 }

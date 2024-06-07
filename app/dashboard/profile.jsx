@@ -33,7 +33,6 @@ export function Profile({user, setUser, profileInfo, setProfileInfo}) {
   }, [profileInfo]);
 
   const createUser = async () => {
-    console.log(user["$id"])
       const res = await databases.listDocuments(
         '664dccf6002506fb7cb7',
         '664dccfc0017dce8b2a6',
@@ -44,7 +43,6 @@ export function Profile({user, setUser, profileInfo, setProfileInfo}) {
 
 
       if(res.documents.length > 0){
-        console.log(res.documents[0]["$id"])
         await databases.updateDocument(
           '664dccf6002506fb7cb7',
           '664dccfc0017dce8b2a6',

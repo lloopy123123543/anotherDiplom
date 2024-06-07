@@ -115,7 +115,8 @@ export function Dashboard() {
           {dashPage === "profile" && (
             <Profile profileInfo = {profileInfo} setProfileInfo={setProfileInfo} user={user} setUser={setUser}/>
           )}
-          <GigaChat/>
+
+          {/*<GigaChat/>*/}
         </CardBody>
       </Card>
     </div>

@@ -34,8 +34,6 @@ export function GetStatisticCharts (allSpendings){
 
         array.push(obj);
       });
-
-      console.log(array);
     }
 
     return array;
@@ -48,7 +46,6 @@ export function GetStatisticCharts (allSpendings){
     let arrImprove = []
     let arrSpend = []
     categoryData.map((category) => {
-      console.log(category.value)
       category.value.forEach((val) => {
         if(val && val.improve){
           arrImprove.push(val.improve)
@@ -63,7 +60,6 @@ export function GetStatisticCharts (allSpendings){
       impoves: arrImprove,
       spends: arrSpend
     }
-    console.log(obj)
     return obj
   }
   const data = getAllImproves()

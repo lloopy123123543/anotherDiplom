@@ -23,7 +23,6 @@ export const ModalCreateTask = ({categories, user, setIsOpen, isOpen, allSpendin
   const [cost, setCost] = useState(0)
   const [date, setDate] = useState()
   const [spend, setSpend] = useState(false)
-  console.log(allSpendings)
 
   const createTask = async () => {
     await databases.createDocument(

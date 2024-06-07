@@ -11,20 +11,37 @@ export const ModalCreateCategory = ({user,isOpen,setIsOpen}) => {
 
 
 
-  const createCategory = () => {databases.createDocument(
-    '664dccf6002506fb7cb7',
-    '664dcd4e002e1707355a',
-    ID.unique(),
-    {
-      "users": user.$id,
-      "spending_title": `${categoryName}`
-    }
-  );
-    toast.success("Создано")
+  const createCategory = () => {
+   try{
+     if(categoryName){
+       try {
+         databases.createDocument(
+           '664dccf6002506fb7cb7',
+           '664dcd4e002e1707355a',
+           ID.unique(),
+           {
+             "users": user.$id,
+             "spending_title": `${categoryName}`
+           }
+         );
+         toast.success("Создано")
+       }
+       catch (e){
+         toast.error("Что то пошло не так")
+       }
+     }else{
+       toast.error("Необходимо ввести данные")
+     }
+
+   }
+  catch (e){
+     console.log(e)
+  }
   }
 
   return(
         <Modal>
+          {categoryName}
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               <div onClick={() => setIsOpen((!isOpen))} className="flex justify-end cursor-pointer">
