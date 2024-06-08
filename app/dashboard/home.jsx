@@ -94,6 +94,19 @@ export function Home({user}) {
     fetchDataForAllSpendings();
   }, [spendings, modalCreateCategory, setModalCreateCategory, setModalCreateTaskS, modalCreateTaskS]);
 
+  const deleteTask = async (id) => {
+    try {
+      const res = await databases.deleteDocument(
+        '664dccf6002506fb7cb7',
+        '664dce0100154939f73c',
+        id
+      );
+      await setSpendings(res.documents);
+    } catch (error) {
+      console.error('Error fetching database:', error);
+    }
+
+  }
   const getStatisticsCardsData = () => {
     const budget = () => {
       let sum = 0;
@@ -301,7 +314,7 @@ export function Home({user}) {
                 </thead>
                 <tbody>
                 {allSpendings.map(
-                  ({ spendTitle, cost, spendings, spend, datetime }, key) => {
+                  ({ spendTitle, cost, spendings, spend, datetime, $id }, key) => {
                     const className = `py-3 px-5 ${
                       key === projectsTableData.length - 1
                         ? ""
@@ -344,7 +357,7 @@ export function Home({user}) {
                           </div>
                         </td>
                         <td className={className}>
-                            <TrashIcon className="w-4 cursor-pointer"/>
+                            <TrashIcon onClick={() => deleteTask($id)} className="w-4 cursor-pointer"/>
                         </td>
                       </tr>
                     );
