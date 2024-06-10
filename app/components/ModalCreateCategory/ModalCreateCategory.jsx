@@ -41,7 +41,6 @@ export const ModalCreateCategory = ({user,isOpen,setIsOpen}) => {
 
   return(
         <Modal>
-          {categoryName}
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               <div onClick={() => setIsOpen((!isOpen))} className="flex justify-end cursor-pointer">

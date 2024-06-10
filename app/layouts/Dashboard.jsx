@@ -18,7 +18,7 @@ export function Dashboard() {
 
   async function exit() {
     await account.deleteSession('current');
-    router.push("/sign-in");
+    await router.push("/sign-in");
   }
 
   useEffect(() => {

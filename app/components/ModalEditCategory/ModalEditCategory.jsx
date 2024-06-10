@@ -43,6 +43,7 @@ export const ModalEditCategory = ({currentEdit, categories, user, setIsOpen, isO
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <div onClick={()=> setIsOpen((!isOpen))} className="flex justify-end cursor-pointer">
+            <Typography>Редактировать категорию</Typography>
             <CloseIcon/>
           </div>
 
@@ -53,7 +54,7 @@ export const ModalEditCategory = ({currentEdit, categories, user, setIsOpen, isO
             className="w-full"
             variant="outlined"
             color="blue-gray"
-            placeholder={"Пояснение"}
+            placeholder={"Название"}
             size="sm"
           />
         </div>
