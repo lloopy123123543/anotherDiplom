@@ -103,8 +103,8 @@ export function Homepages({user}) {
 
   useEffect(() => {
     const gpt = async () => {
-      // const url = 'https://chatgpt-42.p.rapidapi.com/geminipro';
-      const url = 'https://hello.ru';
+      const url = 'https://chatgpt-42.p.rapidapi.com/geminipro';
+      // const url = 'https://hello.ru';
       const options = {
         method: 'POST',
         headers: {
@@ -117,7 +117,7 @@ export function Homepages({user}) {
             {
               role: 'user',
               content:
-                 `Представь что ты Финансовый аналитик, тебе нужно сделать рекомендации, пиши по русски, без использования языка разметки или markdown, опирайся только на те данные, которые я укажу, не пиши точных чисел и опирайся на рубли а не на доллары
+                 `Представь что ты Финансовый аналитик, тебе нужно сделать рекомендации, пиши по русски, без использования языка разметки или markdown, опирайся только на те данные, которые я укажу, не пиши точных чисел и опирайся на рубли а не на доллары, а так-же это личные расходы, не надо писать инчего про бизнес
                           Всего есть такие категории трат и доходов:
                            Категория - ${alcategoryes && alcategoryes.map((spend, index) => {
                               return `${spend.title}, которая вышла в ${spend.value.cost} рублей`
@@ -127,7 +127,7 @@ export function Homepages({user}) {
           temperature: 0.9,
           top_k: 5,
           top_p: 0.9,
-          max_tokens: 500,
+          max_tokens: 900,
           web_access: false
         })
       };
