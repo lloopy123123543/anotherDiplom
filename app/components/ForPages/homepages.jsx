@@ -486,7 +486,7 @@ export function Homepages({user}) {
         )}
         </Card>
 
-        <Card className="relative bg-clip-border rounded-xl overflow-hidden text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
+        <Card className="relative bg-clip-border rounded-xl overflow-hidden text-gray-700 shadow-none m-0 flex items-center p-6">
           <Typography variant="h6" color="blue-gray" className="mb-1">
             Рекомендации от ИИ
           </Typography>
