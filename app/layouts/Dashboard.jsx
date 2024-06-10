@@ -1,13 +1,13 @@
 
 import {Avatar, Card, CardBody, Spinner, Tab, Tabs, TabsHeader, Typography} from "@material-tailwind/react";
 import {ChatBubbleLeftEllipsisIcon, Cog6ToothIcon, HomeIcon} from "@heroicons/react/24/solid";
-import {Profile} from "@/app/dashboard/profile";
 import {useEffect, useState} from "react";
-import {account, databases} from "@/app/appwrite";
 import {useRouter} from "next/navigation";
 import {Query} from "appwrite";
-import Home from "@/app/dashboard/home";
-import {GigaChat} from "@/app/components/GigaChat/GigaChat";
+import {account, databases} from "../appwrite";
+import Profile from "../components/ForPages/profile";
+import {Homepages} from "../components/ForPages/homepages";
+import Settings from "../components/ForPages/settings";
 
 export function Dashboard() {
   const [dashPage, setDashPage] = useState("home");
@@ -101,7 +101,7 @@ export function Dashboard() {
                   </Tab>
                   <Tab onClick={() => setDashPage("settings")} value="settings">
                     <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5"/>
-                    Настройки
+                    Прочее
                   </Tab>
                 </TabsHeader>
               </Tabs>
@@ -109,12 +109,17 @@ export function Dashboard() {
           </div>
 
           {dashPage === "home" && (
-            <Home user={profileInfo}/>
+            <Homepages user={profileInfo}/>
           )}
 
           {dashPage === "profile" && (
             <Profile profileInfo = {profileInfo} setProfileInfo={setProfileInfo} user={user} setUser={setUser}/>
           )}
+
+          {dashPage === "settings" && (
+            <Settings user={profileInfo}/>
+          )}
+
 
           {/*<GigaChat/>*/}
         </CardBody>

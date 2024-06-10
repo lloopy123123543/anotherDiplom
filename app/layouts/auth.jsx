@@ -10,13 +10,13 @@ import routes from "@/routes";
 export function Auth() {
   const navbarRoutes = [
     {
-      name: "dashboard",
-      path: "/dashboard/home",
+      name: "ForPages",
+      path: "/ForPages/home",
       icon: ChartPieIcon,
     },
     {
       name: "profile",
-      path: "/dashboard/home",
+      path: "/ForPages/home",
       icon: UserIcon,
     },
     {

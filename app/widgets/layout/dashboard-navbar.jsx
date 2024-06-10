@@ -177,6 +177,6 @@ export function DashboardNavbar() {
   );
 }
 
-DashboardNavbar.displayName = "/src/widgets/layout/dashboard-navbar.jsx";
+DashboardNavbar.displayName = "/src/widgets/layout/ForPages-navbar.jsx";
 
 export default DashboardNavbar;

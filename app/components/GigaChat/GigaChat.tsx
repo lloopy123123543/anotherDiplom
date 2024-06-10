@@ -4,6 +4,7 @@ import {ViewGigaChat} from "@/app/components/GigaChat/ViewGigaChat";
 
 export const GigaChat = () => {
   return(
-    <ViewGigaChat {...useGigaChat()}/>
+    <div>s</div>
+    // <ViewGigaChat {...useGigaChat()}/>
   )
 }

@@ -25,7 +25,7 @@ export function SignUp() {
   //     setUser(userData);
   //     if (userData) {
   //       toast.success("sus")
-  //       router.push("/dashboard");
+  //       router.push("/ForPages");
   //     }
   //   } catch (error) {
   //     toast.error(error)

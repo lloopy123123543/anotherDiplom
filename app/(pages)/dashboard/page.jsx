@@ -1,7 +1,6 @@
 "use client"
 
-
-import {Dashboard} from "@/app/layouts/dashboard";
+import {Dashboard} from "../../layouts/Dashboard";
 
 export default function page(){
   return(

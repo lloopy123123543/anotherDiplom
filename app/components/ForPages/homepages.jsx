@@ -1,45 +1,38 @@
-import React, {useEffect, useState} from "react";
+"use client"
+import React, {useEffect, useMemo, useState} from "react";
+import {databases} from "../../appwrite";
+import {Query} from "appwrite";
+import {ModalCreateCategory} from "../ModalCreateCategory/ModalCreateCategory";
+import {ModalCreateTask} from "../ModalCreateTask/ModalCreateTask";
 import {
-  Typography,
-  Card,
+  Card, CardBody,
   CardHeader,
-  CardBody,
   IconButton,
   Menu,
   MenuHandler,
-  MenuList,
-  MenuItem, Spinner,
+  MenuItem,
+  MenuList, Spinner,
+  Typography
 } from "@material-tailwind/react";
-import {
-  BanknotesIcon,
-  ChartBarIcon,
-  ClockIcon,
-  UserPlusIcon,
-  UsersIcon
-} from "@heroicons/react/24/solid";
-import StatisticsCard from "@/app/widgets/cards/statistics-card";
-import StatisticsChart from "@/app/widgets/charts/statistics-chart";
-import statisticsChartsData from "@/app/data/statistics-charts-data";
-import projectsTableData from "@/app/data/projects-table-data";
-import {databases} from "@/app/appwrite";
-import {Query} from "appwrite";
-import {convertDateFormat} from "@/app/configs/formatData";
-import {ModalCreateCategory} from "@/app/components/ModalCreateCategory/ModalCreateCategory";
-import {ModalCreateTask} from "@/app/components/ModalCreateTask/ModalCreateTask";
+import StatisticsCard from "../../widgets/cards/statistics-card";
+import {getAllCategoryes, GetStatisticCharts} from "../GetStatisticCharts/GetStatisticCharts";
+import {BanknotesIcon, ChartBarIcon, ClockIcon, UserIcon, UserPlusIcon} from "@heroicons/react/24/solid";
+import StatisticsChart from "../../widgets/charts/statistics-chart";
 import {PlusIcon, TrashIcon} from "@heroicons/react/16/solid";
-import {GetStatisticCharts} from "@/app/components/GetStatisticCharts/GetStatisticCharts";
+import projectsTableData from "../../data/projects-table-data";
+import {convertDateFormat} from "../../configs/formatData";
 
-export function Home({user}) {
+
+export function Homepages({user}) {
   const [spendings, setSpendings] = useState(null)
-  const [spending, setSpending] = useState(null)
   const [allSpendings, setAllSpendings] = useState([])
-
   const [modalCreateCategory, setModalCreateCategory] = useState(false)
   const [modalCreateTaskS, setModalCreateTaskS] = useState(false)
-
   const [isLoading, setIsLoading] = useState(true)
-
   const [spendObj, setSpendObj] = useState([])
+
+  const [AIMessage, setAIMessage] = useState("")
+  const [AIReadyMessage, setAIReadyMessage] = useState()
 
   useEffect(() => {
     async function getDatabase() {
@@ -107,6 +100,93 @@ export function Home({user}) {
     }
 
   }
+
+  useEffect(() => {
+    const gpt = async () => {
+      // const url = 'https://chatgpt-42.p.rapidapi.com/geminipro';
+      const url = 'https://hello.ru';
+      const options = {
+        method: 'POST',
+        headers: {
+          'x-rapidapi-key': '399ba41038msh4878176e8c6e9afp17a3f4jsn89a13410ae86',
+          'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content:
+                 `Представь что ты Финансовый аналитик, тебе нужно сделать рекомендации, пиши по русски, без использования языка разметки или markdown, опирайся только на те данные, которые я укажу, не пиши точных чисел и опирайся на рубли а не на доллары
+                          Всего есть такие категории трат и доходов:
+                           Категория - ${alcategoryes && alcategoryes.map((spend, index) => {
+                              return `${spend.title}, которая вышла в ${spend.value.cost} рублей`
+                            })}`
+            }
+          ],
+          temperature: 0.9,
+          top_k: 5,
+          top_p: 0.9,
+          max_tokens: 500,
+          web_access: false
+        })
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        setAIMessage(result.result)
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    gpt();
+  }, [spendObj]);
+
+  // useEffect(() => {
+  //
+  //   let data = {
+  //     'scope': 'GIGACHAT_API_PERS'
+  //   }
+  //   let config = {
+  //     method: 'POST',
+  //     maxBodyLength: Infinity,
+  //     url: 'https://ngw.devices.sberbank.ru:9443/api/v2/oauth',
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //       'Accept': 'application/json',
+  //       'RqUID': '235cb865-5466-485c-b49d-cc57a2844745',
+  //       'Access-Control-Allow-Origin': "*",
+  //       'Authorization': 'Basic ZWY1ZjdkMmItNjgyYy00N2I0LThmZTAtMmU1YmZkNzhhYTNiOjIzNWNiODY1LTU0NjYtNDg1Yy1iNDlkLWNjNTdhMjg0NDc0NQ=='
+  //     },
+  //     data: data,
+  //     withCredentials: false,
+  //     crossDomain: true,
+  //   };
+  //
+  //   axios(config)
+  //     .then((response) => {
+  //       console.log(JSON.stringify(response.data));
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
+
+
+  useEffect(() => {
+    for (let i = 0; i < AIMessage.length; i++) {
+      const mess = AIMessage.substring(0, i + 1);
+      setTimeout(() => {
+        setAIReadyMessage(mess);
+      }, (i + 1) * 80);
+    }
+
+  }, [AIMessage]);
+
+
   const getStatisticsCardsData = () => {
     const budget = () => {
       let sum = 0;
@@ -160,7 +240,7 @@ export function Home({user}) {
       },
       {
         color: "red",
-        icon: UsersIcon,
+        icon: UserIcon,
         title: "Расходы",
         value: `${spends()} руб`,
         footer: {
@@ -194,6 +274,42 @@ export function Home({user}) {
     ];
   }
 
+  const getAllCategoryes = () => {
+    const array = [];
+
+    if (spendObj.length > 0) {
+      spendObj.forEach((spending) => {
+        const obj = {
+          title: spending.category.spending_title,
+          value: []
+        };
+        let cost = 0
+
+        spending.spendings.forEach((spend) => {
+          if (!spend.spend) {
+            cost += spend.cost;
+            obj.value.push({
+              improve: spend.cost,
+              spendTitle: spend.spendTitle
+            });
+          } else {
+            cost -= spend.cost;
+            obj.value.push({
+              neimprove: spend.cost,
+              spendTitle: spend.spendTitle
+            });
+          }
+        });
+        obj.value.cost = cost
+
+        array.push(obj);
+      });
+    }
+
+    return array;
+  }
+
+  const alcategoryes = getAllCategoryes()
 
 
   return (
@@ -374,11 +490,14 @@ export function Home({user}) {
           <Typography variant="h6" color="blue-gray" className="mb-1">
             Рекомендации от ИИ
           </Typography>
+          <div>
+
+            {AIReadyMessage}
+          </div>
         </Card>
       </div>
 
     </div>
   );
-}
 
-export default Home;
+}

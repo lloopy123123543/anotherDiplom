@@ -4,7 +4,7 @@ import chartsConfig from "../../configs/charts-config";
 export function GetStatisticCharts (allSpendings){
 
 
-  const getAllCategoryes = () => {
+   const getAllCategoryes = () => {
     const array = [];
 
     if (allSpendings.length > 0) {
