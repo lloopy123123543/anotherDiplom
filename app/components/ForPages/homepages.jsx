@@ -103,39 +103,39 @@ export function Homepages({user}) {
 
   useEffect(() => {
     const gpt = async () => {
-      const url = 'https://chatgpt-42.p.rapidapi.com/geminipro';
+      const url = 'https://chatgpt-gpt4-ai-chatbot.p.rapidapi.com/ask';
       // const url = 'https://hello.ru';
       const options = {
         method: 'POST',
         headers: {
-          'x-rapidapi-key': '399ba41038msh4878176e8c6e9afp17a3f4jsn89a13410ae86',
-          'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
+          'x-rapidapi-key': '7d83f1d239mshf1b25a843380a05p1219d0jsnd5b6af3b8c3f',
+          'x-rapidapi-host': 'chatgpt-gpt4-ai-chatbot.p.rapidapi.com',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          messages: [
-            {
-              role: 'user',
-              content:
-                 `Представь что ты Финансовый аналитик, тебе нужно сделать рекомендации, пиши по русски, без использования языка разметки или markdown, опирайся только на те данные, которые я укажу, не пиши точных чисел и опирайся на рубли а не на доллары, а так-же это личные расходы, не надо писать инчего про бизнес
+          // messages: [
+          //   {
+              query:
+                 `Представь что ты Финансовый аналитик, тебе нужно сделать рекомендации, пиши по русски, без использования языка разметки или markdown, опирайся только на те данные, которые я укажу, не пиши точных чисел и опирайся на рубли а не на доллары
                           Всего есть такие категории трат и доходов:
                            Категория - ${alcategoryes && alcategoryes.map((spend, index) => {
                               return `${spend.title}, которая вышла в ${spend.value.cost} рублей`
                             })}`
             }
-          ],
-          temperature: 0.9,
-          top_k: 5,
-          top_p: 0.9,
-          max_tokens: 900,
-          web_access: false
-        })
+          // ],
+          // temperature: 0.9,
+          // top_k: 5,
+          // top_p: 0.9,
+          // max_tokens: 500,
+          // web_access: false
+        // }
+        )
       };
 
       try {
         const response = await fetch(url, options);
         const result = await response.json();
-        setAIMessage(result.result)
+        setAIMessage(result.response)
         console.log(result);
       } catch (error) {
         console.error(error);
@@ -177,12 +177,14 @@ export function Homepages({user}) {
 
 
   useEffect(() => {
-    for (let i = 0; i < AIMessage.length; i++) {
-      const mess = AIMessage.substring(0, i + 1);
-      setTimeout(() => {
-        setAIReadyMessage(mess);
-      }, (i + 1) * 80);
-    }
+   if (AIMessage){
+     for (let i = 0; i < AIMessage.length; i++) {
+       const mess = AIMessage.substring(0, i + 1);
+       setTimeout(() => {
+         setAIReadyMessage(mess);
+       }, (i + 1) * 80);
+     }
+   }
 
   }, [AIMessage]);
 
